@@ -6,7 +6,7 @@ from finta import TA
 import datetime
 # Add histogram data
 
-df = pd.read_csv('final_data - Copy.csv')
+df = pd.read_csv('final_data.csv')
 df = df[['date','open','high','low','close','volume']]
 
 config = dict({'scrollZoom': True})  
