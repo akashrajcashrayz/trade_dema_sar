@@ -48,7 +48,7 @@ if date:
                         low=df_year['low'],
                         close=df_year['close'],name = 'price')
 
-        DEMA =  go.Scatter(x=df_year['date'],y=df_year['DEMA'],name = 'DEMA',marker_line_color="MediumPurple")
+        DEMA =  go.Scatter(x=df_year['date'],y=df_year['DEMA'],name = 'DEMA',marker_line_color="MediumPurple", marker_color="MediumPurple")
         SAR =  go.Scatter(x=df_year['date'],y=df_year['SAR'],name = 'SAR',mode='markers',
                            marker_line_color="midnightblue", marker_color="lightskyblue",
                            marker_line_width=0.5, marker_size=2)                            
