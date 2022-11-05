@@ -51,7 +51,7 @@ if date:
         DEMA =  go.Scatter(x=df_year['date'],y=df_year['DEMA'],name = 'DEMA')
         SAR =  go.Scatter(x=df_year['date'],y=df_year['SAR'],name = 'SAR',mode='markers',
                            marker_line_color="midnightblue", marker_color="lightskyblue",
-                           marker_line_width=2, marker_size=5)                            
+                           marker_line_width=0.5, marker_size=2)                            
                         
                         
         fig = go.Figure(data=[price,DEMA,SAR])
