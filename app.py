@@ -1,13 +1,12 @@
 import streamlit as st
 import plotly.figure_factory as ff
-import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from finta import TA
 import datetime
 # Add histogram data
 
-df = pd.read_csv('final_data.csv')
+df = pd.read_csv('final_data - Copy.csv')
 df = df[['date','open','high','low','close','volume']]
 
 config = dict({'scrollZoom': True})  
