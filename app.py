@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from finta import TA
 import datetime
+import numpy as np
 # Add histogram data
 
 df = pd.read_csv('final_data.csv')
@@ -28,7 +29,23 @@ period = st.number_input('Insert  period for DEMA',14)
 af = st.number_input('Insert  AF for SAR',0.02)
 amax = st.number_input('Insert  AMAX for SAR',0.02)
 
+chart_type = st.selectbox('chart_type',('normal','remove_candles'),'normal')
 
+
+def rem_candle(df):
+  red_index = df.loc[(  df['open'] > df['DEMA']  )  & (df['close']  < df['DEMA'] )].index
+  green_index = df.loc[(  df['open'] < df['DEMA']  )  & (df['close']  > df['DEMA'] )].index
+  df.at[red_index,'red'] = 1
+  df.at[green_index,'green'] = 1
+  sig_index = df.loc[(  df['red'] == 1  )  | (df['green']  == 1 )].index
+  df.at[sig_index,'sig'] = 1
+
+
+  df['open'] = np.where(df['sig']!=1,np.NaN,df['open'])
+  df['close'] = np.where(df['sig']!=1,np.NaN,df['close'])
+  df['high'] = np.where(df['sig']!=1,np.NaN,df['high'])
+  df['low'] = np.where(df['sig']!=1,np.NaN,df['low'])
+  return df
 
 if date: 
     print(period,af,amax) 
@@ -36,12 +53,13 @@ if date:
     df_year  = df.loc[df['date_day'].dt.date == date]
     if len(df_year) >0:
         df_year = df_year.reset_index()       
-        
-        print(df_year)            
+          
         df_year['SAR'] = TA.SAR(df_year,af = af,amax = amax)  
-        print(df_year)
-        df_year['DEMA'] = TA.DEMA(df_year,period = period)       
-        print(df_year)        
+
+        df_year['DEMA'] = TA.DEMA(df_year,period = period) 
+        if chart_type == 'remove_candles':
+            df_year = rem_candle(df_year)
+    
         price = go.Candlestick(x=df_year['date'],
                         open=df_year['open'],
                         high=df_year['high'],
