@@ -12,7 +12,7 @@ df = df[['date','open','high','low','close','volume']]
 config = dict({'scrollZoom': True})  
 # Group data together
 
-df['date'] = pd.to_datetime(df['date'], format='%d/%m/%Y %H:%M').dt.strftime('%Y-%m-%d %H:%M')
+df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y %H:%M').dt.strftime('%Y-%m-%d %H:%M')
 df['date_day'] = pd.to_datetime(df['date'], format='%Y-%m-%d %H:%M')
 #year = st.selectbox('select year',(2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018,2019, 2020, 2021, 2022))
 #month = st.selectbox('select month',(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12))
