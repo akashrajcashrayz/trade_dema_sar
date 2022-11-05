@@ -29,7 +29,7 @@ period = st.number_input('Insert  period for DEMA',14)
 af = st.number_input('Insert  AF for SAR',0.02)
 amax = st.number_input('Insert  AMAX for SAR',0.02)
 
-chart_type = st.selectbox('chart_type',('normal','remove_candles'))
+chart_type = st.selectbox('chart_type',('normal'))
 
 
 def rem_candle(df):
