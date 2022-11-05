@@ -8,3 +8,4 @@ eventlet
 finta
 plotly
 streamlit
+numpy
