@@ -9,3 +9,4 @@ finta
 plotly
 streamlit
 numpy
+joblib
