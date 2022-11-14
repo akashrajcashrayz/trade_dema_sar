@@ -11,4 +11,4 @@ streamlit
 numpy
 joblib
 scikit-learn
-xgboost
+xgboost==1.6.1
