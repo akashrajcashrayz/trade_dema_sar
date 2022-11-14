@@ -167,8 +167,8 @@ if date:
 
 
 
-        BDEMA =  go.Scatter(x=df_year['date'] - 5,y=df_year['dema_line_buy'],name = 'dema_line_buy',marker_line_color="lightskyblue", marker_color="MediumPurple")
-        SDEMA =  go.Scatter(x=df_year['date'] + 5,y=df_year['dema_line_sell'],name = 'dema_line_sell',marker_line_color="DarkSlateGrey", marker_color="DarkSlateGrey")
+        BDEMA =  go.Scatter(x=df_year['date'] ,y=df_year['dema_line_buy'] - 5,name = 'dema_line_buy',marker_line_color="lightskyblue", marker_color="MediumPurple")
+        SDEMA =  go.Scatter(x=df_year['date'] ,y=df_year['dema_line_sell'] + 5,name = 'dema_line_sell',marker_line_color="DarkSlateGrey", marker_color="DarkSlateGrey")
  
                         
         fig = go.Figure(data=[DEMA,BDEMA,SDEMA,SAR])
