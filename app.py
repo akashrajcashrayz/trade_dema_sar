@@ -5,6 +5,12 @@ import plotly.graph_objects as go
 from finta import TA
 import datetime
 import numpy as np
+import joblib
+from sklearn import preprocessing 
+
+encoder =  preprocessing.LabelEncoder()
+encoder.classes_ = np.load('classes.npy',allow_pickle=True)
+model = joblib.load('model_pattern')
 # Add histogram data
 
 df = pd.read_csv('final_data.csv')
@@ -29,7 +35,7 @@ period = st.number_input('Insert  period for DEMA',14)
 af = st.number_input('Insert  AF for SAR',0.02)
 amax = st.number_input('Insert  AMAX for SAR',0.02)
 
-chart_type = st.selectbox('chart_type',('normal'))
+chart_type = st.selectbox('chart_type',('normal','remove_candles','pred_pattern'))
 
 
 def rem_candle(df):
@@ -47,6 +53,85 @@ def rem_candle(df):
   df['low'] = np.where(df['sig']!=1,np.NaN,df['low'])
   return df
 
+def get_da(dchec):
+    def get_va(ind):
+        if ind>10:
+            fet =  ["DEMA_1","DEMA_2",
+          "DEMA_3",
+          "DEMA_4",
+          "DEMA_5",
+          "DEMA_6",
+          "DEMA_7",
+          "DEMA_8","open_c","high_c","low_c","close_c","SAR_val"]
+            df_check = pd.DataFrame(columns = fet)
+            df_check.loc[len(dchec)]  = list(dchec['DEMA'].iloc[ind-7:ind+1]) + [dchec['open'].iloc[ind] , dchec['high'].iloc[ind]  , dchec['low'].iloc[ind] , dchec['close'].iloc[ind], dchec['SAR'].iloc[ind]]
+            pctc = df_check.pct_change(axis=1)
+            #print(pctc)
+            preds =  model.predict(pctc)
+            pre = encoder.inverse_transform(preds)
+
+            if pre[0] == 'buy_signal':
+
+
+                if dchec['SAR'].iloc[ind] < dchec['low'].iloc[ind]:
+                    return pre[0]
+
+            if pre[0] == 'sell_signal':
+
+                if dchec['SAR'].iloc[ind] > dchec['high'].iloc[ind]:
+                    return pre[0]            
+
+
+            return np.NaN
+        else:
+            return np.NaN
+
+    dx= pd.DataFrame([z for z in range(len(dchec))])
+    dx['da'] = dx 
+    dchec['prediction'] = dx['da'].apply(get_va)
+    
+    
+    test_list = list(dchec.loc[(dchec['prediction'] == 'buy_signal')  ].index)
+    res = [test_list[i + 1] - test_list[i] for i in range(len(test_list)-1)]
+    sublistt = [[z for z in range(i-7,i+1)] for i in test_list]
+    flat_list = [item for sublist in sublistt for item in sublist]    
+    sor_index = sorted(list(set(flat_list))) 
+
+
+
+    dchec['dema_line_buy'] = dchec.loc[sor_index]['DEMA']
+
+
+    test_list = list(dchec.loc[ (dchec['prediction'] == 'sell_signal') ].index)
+    res = [test_list[i + 1] - test_list[i] for i in range(len(test_list)-1)]
+    sublistt = [[z for z in range(i-7,i+1)] for i in test_list]
+    flat_list = [item for sublist in sublistt for item in sublist]    
+    sor_index = sorted(list(set(flat_list))) 
+
+    dchec['dema_line_sell'] = dchec.loc[sor_index]['DEMA']
+    
+    
+    
+    df_year['dema_line_buy'] = df_year['dema_line_buy'] +15
+    df_year['dema_line_sell'] = df_year['dema_line_sell'] +25
+    df_year['DEMA'] = df_year['DEMA'] +20
+
+    
+    
+    return df_year
+    
+    
+
+    
+    
+    
+    
+
+
+
+
+
+
 if date: 
     print(period,af,amax) 
     #df_year = df.loc[(df['year'] == year) & (df['month'] == month ) & (df['date_1'] == date1 )]
@@ -57,8 +142,15 @@ if date:
         df_year['SAR'] = TA.SAR(df_year,af = af,amax = amax)  
 
         df_year['DEMA'] = TA.DEMA(df_year,period = period) 
+
+        
+        
+        df_year = get_da(df_year)
+        
         if chart_type == 'remove_candles':
             df_year = rem_candle(df_year)
+            
+            
     
         price = go.Candlestick(x=df_year['date'],
                         open=df_year['open'],
@@ -70,9 +162,15 @@ if date:
         SAR =  go.Scatter(x=df_year['date'],y=df_year['SAR'],name = 'SAR',mode='markers',
                            marker_line_color="midnightblue", marker_color="lightskyblue",
                            marker_line_width=0.5, marker_size=2)                            
+ 
+
+
+
+        BDEMA =  go.Scatter(x=df_year['date'],y=df_year['dema_line_buy'],name = 'dema_line_buy',marker_line_color="lightskyblue", marker_color="lightskyblue")
+        SDEMA =  go.Scatter(x=df_year['date'],y=df_year['dema_line_sell'],name = 'dema_line_sell',marker_line_color="DarkSlateGrey", marker_color="DarkSlateGrey")
+ 
                         
-                        
-        fig = go.Figure(data=[price,DEMA,SAR])
+        fig = go.Figure(data=[DEMA,BDEMA,SDEMA,SAR])
                         
                         
                         
