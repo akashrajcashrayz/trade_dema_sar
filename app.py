@@ -6,6 +6,7 @@ from finta import TA
 import datetime
 import numpy as np
 import joblib
+import sklearn
 from sklearn import preprocessing 
 
 encoder =  preprocessing.LabelEncoder()
