@@ -10,4 +10,4 @@ plotly
 streamlit
 numpy
 joblib
-sklearn
+scikit-learn
