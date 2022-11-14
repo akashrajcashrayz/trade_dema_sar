@@ -11,3 +11,4 @@ streamlit
 numpy
 joblib
 scikit-learn
+xgboost
